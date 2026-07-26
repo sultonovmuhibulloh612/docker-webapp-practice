@@ -1,4 +1,4 @@
-name: Docker Build
+name: Docker Build and Push
 
 on:
   push:
@@ -11,8 +11,15 @@ jobs:
       - name: Checkout код
         uses: actions/checkout@v4
 
-      - name: Собрать Docker образ
-        run: docker build -t webapp-web .
+      - name: Логин в Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Проверить, что образ запускается
-        run: docker run --rm webapp-web python -c "print('OK')"
+      - name: Собрать и запушить образ
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/docker-webapp-practice:latest
