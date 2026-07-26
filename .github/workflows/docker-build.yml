@@ -1,0 +1,18 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout код
+        uses: actions/checkout@v4
+
+      - name: Собрать Docker образ
+        run: docker build -t webapp-web .
+
+      - name: Проверить, что образ запускается
+        run: docker run --rm webapp-web python -c "print('OK')"
